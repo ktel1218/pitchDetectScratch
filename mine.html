@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="temp.js"></script>
+    <script src="jquery.min.js"></script>
+</head>
+<body>
+
+<script>
+
+    // function callback(results){
+    //     console.log("this is my callback function");
+    //     console.log("these are my results: " + results)
+    // }
+    // function doSomething(callback){
+    //     console.log("about to do something");
+    //     return {
+    //         then: function(callback){
+    //             var value = "SUCCESS";
+    //             callback(value);
+    //         }
+    //     }
+    // }
+
+    // doSomething(callback);
+
+</script>
+<button id="start">detect pitch</button>
+<span id="pitch"><svg width="30%" viewbox="0 0 30 42">
+  <path fill="black" stroke="#000" stroke-width="1.5"
+        d="M15 3
+           Q16.5 6.8 25 18
+           A12.8 12.8 0 1 1 5 18
+           Q13.5 6.8 15 3z" />
+</svg></span>
+<script>
+    
+    var detecting = false;
+
+    $('#start').click(function () {
+        pitchDetect.requestMicrophone().then(start); // how do I handle an error?
+    });
+
+    function listenLoop() {
+            pitch = pitchDetect.updatePitch();
+            $('#pitch').html(pitch);
+            if (detecting){
+                setTimeout( listenLoop, 60 );
+            }
+    }
+
+    function start() {
+        if (!detecting) {
+            detecting = true;
+            // request user media every time we start?
+            $('#start').unbind("click"); // why did I have to do this?
+            $('#start').click(stop);
+            listenLoop();
+        }
+    }
+
+    function stop() {
+        if (detecting) {
+            detecting = false;
+            requestId = undefined;
+        }
+        $('#start').click(start)
+    }
+
+</script>
+</body>
+</html>
